@@ -8,22 +8,9 @@
 import UIKit
 import Foundation
 
-class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSource  {
+class ViewController: UIViewController   {
     
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 3
-    }
-    
-    
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        
-        let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as! resultTableViewCell
-        
-        return cell
-    }
-    
-
-    
+    // MARK: - Outlets
     @IBOutlet var appButtons: [UIButton]!{
         didSet{
             for button in appButtons{
@@ -31,23 +18,26 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
             }
         }
     }
-    
     @IBOutlet weak var textTypingLabel: UILabel!
     @IBOutlet weak var answerLabel: UILabel!
-    
     @IBOutlet weak var tableView: UITableView!
     
     
+    
     override func viewDidLoad() {
-        super.viewDidLoad()
         
-      
+        super.viewDidLoad()
+        prepareUI()
+        
     }
     
     
     
-    // MARK: - Actions
     
+    
+    
+    
+    // MARK: - Actions
     @IBAction func buttonsTyping(_ sender: UIButton){
         
         buttonAnimation(sender)
@@ -111,16 +101,23 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     func BracketTyping(Current symbol: String, Typed text: String, Last char: String){
         let operators = ["+", "-", "*", "/", "^", "(", ]
         
+        if symbol == ")"{
+            
+      
         if symbol == ")" && unclosedBracketsNum(text) > 0 && !operators.contains(char){
+            
             addTypingSymbol(symbol)
             
         }
+            
+            
+        }
         
-        if text == "0" {
+        if text == "0" &&  symbol != ")" {
             clearTextTyping()
             addTypingSymbol(symbol)
             
-        } else if operators.contains(char){
+        } else if operators.contains(char) &&  symbol != ")" {
             
             addTypingSymbol(symbol)
             
@@ -313,6 +310,34 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     func clearTextTyping() {
         textTypingLabel.text! = ""
     }
+ 
+}
+
+
+extension ViewController: UITableViewDelegate, UITableViewDataSource{
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return 9
+    }
     
     
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        
+        let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as! resultTableViewCell
+        
+        return cell
+    }
+    
+    
+}
+
+
+// MARK: - Private metods
+private extension ViewController {
+    
+    func prepareUI() {
+        
+        tableView.register(UINib(nibName: "resultTableViewCell", bundle: nil), forCellReuseIdentifier: "cell")
+     
+        
+    }
 }
